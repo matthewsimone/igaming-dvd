@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iGaming Interactive - Logo Bounce</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #0d0d0d;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bounceCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('bounceCanvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Random color generator
+    function getRandomColor() {
+      const colors = ['#00ffcc', '#ff0077', '#ffaa00', '#66ff00', '#0077ff'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    const logo = {
+      x: 100,
+      y: 100,
+      radius: 40,
+      dx: 2.5,
+      dy: 2.5,
+      color: getRandomColor()
+    };
+
+    function drawLogo() {
+      ctx.beginPath();
+      ctx.arc(logo.x, logo.y, logo.radius, 0, Math.PI * 2);
+      ctx.fillStyle = logo.color;
+      ctx.fill();
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawLogo();
+
+      logo.x += logo.dx;
+      logo.y += logo.dy;
+
+      let bounced = false;
+
+      if (logo.x + logo.radius > canvas.width || logo.x - logo.radius < 0) {
+        logo.dx *= -1;
+        bounced = true;
+      }
+      if (logo.y + logo.radius > canvas.height || logo.y - logo.radius < 0) {
+        logo.dy *= -1;
+        bounced = true;
+      }
+
+      if (bounced) {
+        logo.color = getRandomColor();
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    animate();
+  </script>
+</body>
+</html>
