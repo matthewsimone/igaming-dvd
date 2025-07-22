@@ -30,25 +30,23 @@
       canvas.height = window.innerHeight;
     });
 
-    const colors = [
-      '#00ffcc', '#33ffd6', '#66ffe0', '#99ffea', '#ccfff4',
-      '#ffffff', '#ccfff4', '#99ffea', '#66ffe0', '#33ffd6', '#00ffcc'
-    ];
+    const teal = '#00ffcc';
+    const white = '#ffffff';
 
-    let colorIndex = 0;
+    let currentColor = teal;
 
     const ball = {
       x: canvas.width / 2,
       y: canvas.height / 2,
-      radius: 40, // 5x size of previous small circles
+      radius: 40,
       dx: 3,
       dy: 2,
-      color: colors[colorIndex]
+      color: currentColor
     };
 
-    function updateColor() {
-      colorIndex = (colorIndex + 1) % colors.length;
-      ball.color = colors[colorIndex];
+    function toggleColor() {
+      currentColor = currentColor === teal ? white : teal;
+      ball.color = currentColor;
     }
 
     function animate() {
@@ -64,14 +62,15 @@
       ball.x += ball.dx;
       ball.y += ball.dy;
 
-      // Bounce and update color on wall collision
+      // Check wall collisions
       if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
         ball.dx *= -1;
-        updateColor();
+        toggleColor(); // Change color on left/right walls
       }
+
       if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
         ball.dy *= -1;
-        updateColor();
+        // No color change on top/bottom bounce
       }
 
       requestAnimationFrame(animate);
