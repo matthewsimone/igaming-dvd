@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>iGaming Interactive - Logo Bounce</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>iGaming Interactive</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background-color: #0d0d0d;
+      background: #000; /* Fully black background */
     }
     canvas {
       display: block;
@@ -17,66 +17,65 @@
   </style>
 </head>
 <body>
-  <canvas id="bounceCanvas"></canvas>
+  <canvas id="dvd"></canvas>
 
   <script>
-    const canvas = document.getElementById('bounceCanvas');
+    const canvas = document.getElementById('dvd');
     const ctx = canvas.getContext('2d');
-
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
-    // Random color generator
-    function getRandomColor() {
-      const colors = ['#00ffcc', '#ff0077', '#ffaa00', '#66ff00', '#0077ff'];
-      return colors[Math.floor(Math.random() * colors.length)];
-    }
-
-    const logo = {
-      x: 100,
-      y: 100,
-      radius: 40,
-      dx: 2.5,
-      dy: 2.5,
-      color: getRandomColor()
-    };
-
-    function drawLogo() {
-      ctx.beginPath();
-      ctx.arc(logo.x, logo.y, logo.radius, 0, Math.PI * 2);
-      ctx.fillStyle = logo.color;
-      ctx.fill();
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawLogo();
-
-      logo.x += logo.dx;
-      logo.y += logo.dy;
-
-      let bounced = false;
-
-      if (logo.x + logo.radius > canvas.width || logo.x - logo.radius < 0) {
-        logo.dx *= -1;
-        bounced = true;
-      }
-      if (logo.y + logo.radius > canvas.height || logo.y - logo.radius < 0) {
-        logo.dy *= -1;
-        bounced = true;
-      }
-
-      if (bounced) {
-        logo.color = getRandomColor();
-      }
-
-      requestAnimationFrame(animate);
-    }
 
     window.addEventListener('resize', () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     });
+
+    const colors = [
+      '#00ffcc', '#33ffd6', '#66ffe0', '#99ffea', '#ccfff4',
+      '#ffffff', '#ccfff4', '#99ffea', '#66ffe0', '#33ffd6', '#00ffcc'
+    ];
+
+    let colorIndex = 0;
+
+    const ball = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      radius: 40, // 5x size of previous small circles
+      dx: 3,
+      dy: 2,
+      color: colors[colorIndex]
+    };
+
+    function updateColor() {
+      colorIndex = (colorIndex + 1) % colors.length;
+      ball.color = colors[colorIndex];
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the ball
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = ball.color;
+      ctx.fill();
+
+      // Move the ball
+      ball.x += ball.dx;
+      ball.y += ball.dy;
+
+      // Bounce and update color on wall collision
+      if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+        ball.dx *= -1;
+        updateColor();
+      }
+      if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+        ball.dy *= -1;
+        updateColor();
+      }
+
+      requestAnimationFrame(animate);
+    }
 
     animate();
   </script>
